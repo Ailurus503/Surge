@@ -27,7 +27,7 @@ https://raw.githubusercontent.com/Ailurus503/Surge/main/Module/ChinaMobile/china
 ## 文件
 
 - [china_mobile_ad.sgmodule](./china_mobile_ad.sgmodule)：远程 Surge 模块，引用本仓库 Raw JavaScript 地址
-- [china_mobile_surge.js](../../Script/ChinaMobile/china_mobile_surge.js)：独立的 WebView AES-CBC 脚本
+- [china_mobile_surge.js](./china_mobile_surge.js)：独立的 WebView AES-CBC 脚本
 
 ## 测试状态与注意事项
 
