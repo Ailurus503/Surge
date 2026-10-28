@@ -1,0 +1,19 @@
+#!name=中国移动去广告（Surge 移植版）
+#!desc=移植自 ccyykk666 的 Loon 插件；拦截弹窗、首页/底栏/我的/充值推荐，AES-CBC 解密修改后重新签名。支持 GitHub 一键订阅，脚本远程自动下载。
+#!author=ccyykk666 (original), Surge adaptation
+#!system=ios
+#!date=2026-10-29
+#!icon=https://raw.githubusercontent.com/ccyykk666/Loon-Plugin/main/plugins/china-mobile/icon.png
+#!arguments=HideTopFamily:false,HideTopAge:false,HideTopPhone:false,HideTopNearby:false,HideTopAI:false,HideTopEnterprise:false,BottomClean:true,MineClean:true
+#!arguments-desc=顶部 6 个开关默认 false（保留栏目）；BottomClean、MineClean 默认 true（净化）。填写 true 或 false。
+
+[Map Local]
+# 原 Loon reject_dict(200)：直接返回 HTTP 200 + {}（而非断开连接）
+^https:\/\/client\.app\.coc\.10086\.cn\/biz-orange\/(?:DN\/(?:dropsAdverService\/getDropsAdverNew|homepagePopup\/getSortInfo|toast\/getToastRule)|DH\/toast\/august\/getToast|DA\/liveSuspension\/getPageCode)(?:\?.*)?$ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+
+[Script]
+# 所有动态响应由一个脚本处理；Surge 对每个响应最多运行一个 http-response 脚本。
+中国移动页面广告净化 = type=http-response,pattern=^https:\/\/(?:client\.app\.coc\.10086\.cn\/biz-orange\/(?:DN\/(?:homePage\/getTopAreaList|multipleInterfaces\/aggregationData|searchWord\/getSearchWordInfo|init\/getNavigation|bottomNavigationService\/getNavigationInfo|myPageNew\/getMyPageNew)|DA\/baseServiceFunction\/getAdverList)|h\.app\.coc\.10086\.cn\/biz-orange\/DH\/(?:message_query\/message\/query\/list|myCardVoucher\/getBannerList)|app\.10086\.cn\/biz-orange\/DA\/commonBoard\/getCommonBoard|touch\.10086\.cn\/i\/v1\/(?:cust\/(?:aiMainQry|iopBatchQry)\/[^?]+|pay\/popWindowQry\/[^?]+)|ad\.mcloud\.139\.com\/advertapi\/adv-filter\/adv-filter\/AdInfoFilter\/getAdInfos)(?:\?.*)?$,script-path=https://raw.githubusercontent.com/Ailurus503/Surge/main/Script/ChinaMobile/china_mobile_surge.js,requires-body=true,max-size=1048576,timeout=15,engine=webview,argument=HideTopFamily={{{HideTopFamily}}}&HideTopAge={{{HideTopAge}}}&HideTopPhone={{{HideTopPhone}}}&HideTopNearby={{{HideTopNearby}}}&HideTopAI={{{HideTopAI}}}&HideTopEnterprise={{{HideTopEnterprise}}}&BottomClean={{{BottomClean}}}&MineClean={{{MineClean}}}
+
+[MITM]
+hostname = %APPEND% client.app.coc.10086.cn, h.app.coc.10086.cn, app.10086.cn, touch.10086.cn, ad.mcloud.139.com
