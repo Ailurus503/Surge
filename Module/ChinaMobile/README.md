@@ -34,6 +34,7 @@ Surge 使用原生模块参数表（`#!arguments`），与 Loon 的 `[Argument]`
 | `HideTopEnterprise` | 隐藏顶部“政企” | `false` |
 | `BottomClean` | 底部导航净化 | `true` |
 | `MineClean` | “我的”页面净化 | `true` |
+| `Diagnostic` | 安全诊断日志（排查后可关闭） | `true` |
 
 注意：Surge 参数表不等同于 Loon 的带开关和逐项标签的可视化配置界面。
 
@@ -42,9 +43,21 @@ Surge 使用原生模块参数表（`#!arguments`），与 Loon 的 `[Argument]`
 - [china_mobile_ad.sgmodule](./china_mobile_ad.sgmodule)：远程 Surge 模块，引用本仓库 Raw JavaScript 地址
 - [china_mobile_surge.js](./china_mobile_surge.js)：独立的 WebView AES-CBC 脚本
 
+## 修订版诊断指南（2026-10-29）
+
+原移植版的模拟测试无法证明 Surge 实际解密和拦截成功。此修订版保留原先的 AES / 广告过滤逻辑，并提高响应处理上限至 2 MiB（过大的响应仍会跳过）。
+
+1. Surge 中更新本模块（不是仅在 GitHub 更新）；确认模块、脚本、HTTPS 解密、重写均开启，且已信任 Surge MITM 证书
+2. 关闭中国移动 App 后重新打开，进入首页、我的、充值等页面
+3. 打开 Surge **请求记录 → 对应 `client.app.coc.10086.cn` 等请求 → Notes（备注）**，查找 `[ChinaMobile/diag]`；也可在 Surge 脚本日志查看
+4. `started status=200`：脚本有执行；`modified:`：已返回修改结果；`passthrough:`：脚本原样放行，后缀说明原因
+5. **请求根本没有日志**：优先检查 MITM、脚本开关、模块冲突、是否命中 URL、是否超过响应大小限制。Surge 只运行首个命中的 response 脚本
+
+只分享 **`[ChinaMobile/diag]` 前缀的日志及必要的请求状态**。请不要分享 Cookie、Authorization、手机号、请求/响应完整正文或完整请求头。诊断完成后将 `Diagnostic=false`，并视需要去除模块中 `debug=true`。
+
 ## 测试状态与注意事项
 
-2026-10-29：本地 Node.js 模拟测试共 13 项通过，包含 AES-CBC、MD5、首页、开关、H5、充值、纯 JSON、异常放行。
+2026-10-29：本地 Node.js 模拟测试 13 项通过；另通过 URL 正则与日志模拟测试。模拟测试不等于真实 Surge iOS 端到端验证。
 
 **尚未在真实 Surge iOS 与中国移动 App 中完成端到端验证。** 需支持 `engine=webview`（Web Crypto API）的 Surge 版本。遇到页面异常或接口错误时先停用本模块，查看 Surge 请求记录和脚本日志。
 
