@@ -22,7 +22,20 @@ https://raw.githubusercontent.com/Ailurus503/Surge/main/Module/ChinaMobile/china
 
 ## 开关参数
 
-`HideTopFamily`、`HideTopAge`、`HideTopPhone`、`HideTopNearby`、`HideTopAI`、`HideTopEnterprise` 默认 `false`（保留栏目）；`BottomClean`、`MineClean` 默认 `true`。
+Surge 使用原生模块参数表（`#!arguments`），与 Loon 的 `[Argument]` 图形化滑动开关不同。请在 Surge 已安装模块上**长按 → 编辑参数**，按下表填写 `true`（开启）或 `false`（关闭）：
+
+| 参数名 | 功能 | 默认值 |
+| --- | --- | --- |
+| `HideTopFamily` | 隐藏顶部“爱家” | `false` |
+| `HideTopAge` | 隐藏顶部“网龄” | `false` |
+| `HideTopPhone` | 隐藏顶部“手机” | `false` |
+| `HideTopNearby` | 隐藏顶部“附近厅” | `false` |
+| `HideTopAI` | 隐藏顶部“AI” | `false` |
+| `HideTopEnterprise` | 隐藏顶部“政企” | `false` |
+| `BottomClean` | 底部导航净化 | `true` |
+| `MineClean` | “我的”页面净化 | `true` |
+
+注意：Surge 参数表不等同于 Loon 的带开关和逐项标签的可视化配置界面。
 
 ## 文件
 
