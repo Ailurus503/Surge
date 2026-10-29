@@ -5,7 +5,7 @@
 #!date=2026-10-29
 #!icon=https://raw.githubusercontent.com/ccyykk666/Loon-Plugin/main/plugins/china-mobile/icon.png
 #!arguments=HideTopFamily:false,HideTopAge:false,HideTopPhone:false,HideTopNearby:false,HideTopAI:false,HideTopEnterprise:false,BottomClean:true,MineClean:true
-#!arguments-desc=顶部 6 个开关默认 false（保留栏目）；BottomClean、MineClean 默认 true（净化）。填写 true 或 false。
+#!arguments-desc=填写 true=开启、false=关闭。HideTopFamily=隐藏爱家；HideTopAge=隐藏网龄；HideTopPhone=隐藏手机；HideTopNearby=隐藏附近厅；HideTopAI=隐藏AI；HideTopEnterprise=隐藏政企（以上默认false）；BottomClean=底栏净化；MineClean=我的页面净化（两者默认true）。长按已安装模块可编辑参数。
 
 [Map Local]
 # 原 Loon reject_dict(200)：直接返回 HTTP 200 + {}（而非断开连接）
