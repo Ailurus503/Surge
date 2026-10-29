@@ -10,12 +10,13 @@
   'use strict';
   const url = (typeof $request !== 'undefined' && $request.url) || '';
   const original = (typeof $response !== 'undefined' && $response.body) || '';
-  if (!url || Number($response.status) !== 200 || !original) return $done({});
+  const path = (() => { try { return new URL(url).pathname; } catch (_) { return '[unknown-path]'; } })();
+  const status = typeof $response === 'object' && $response ? Number($response.status) : 0;
 
   const DEFAULTS = {
     HideTopFamily: false, HideTopAge: false, HideTopPhone: false,
     HideTopNearby: false, HideTopAI: false, HideTopEnterprise: false,
-    BottomClean: true, MineClean: true
+    BottomClean: true, MineClean: true, Diagnostic: false
   };
   const ARGS = Object.assign({}, DEFAULTS);
   if (typeof $argument === 'string') {
@@ -31,6 +32,15 @@
     Object.assign(ARGS, $argument);
   }
   const enabled = k => ARGS[k] === true || ARGS[k] === 'true' || ARGS[k] === 1 || ARGS[k] === '1';
+  // Diagnostics never print encrypted bodies, cookies, tokens, or URL query values.
+  const diag = (code) => {
+    if (enabled('Diagnostic')) console.log('[ChinaMobile/diag] ' + path + ' ' + code);
+  };
+  diag('started status=' + status);
+  if (!url || status !== 200 || !original) {
+    diag('passthrough: status-not-200-or-empty-body');
+    return $done({});
+  }
   const topKeys = ['HideTopFamily', 'HideTopAge', 'HideTopPhone', 'HideTopNearby', 'HideTopAI', 'HideTopEnterprise'];
   const hasTopChanges = topKeys.some(enabled);
   const isNavigation = /\/DN\/init\/getNavigation(?:\?|$)/i.test(url);
@@ -38,7 +48,10 @@
   const isMine = /\/DN\/myPageNew\/getMyPageNew(?:\?|$)/i.test(url);
   if ((isNavigation && !hasTopChanges && !enabled('BottomClean')) ||
       (isBottom && !enabled('BottomClean')) ||
-      (isMine && !enabled('MineClean'))) return $done({});
+      (isMine && !enabled('MineClean'))) {
+    diag('passthrough: feature-disabled');
+    return $done({});
+  }
 
   const getHeader = (headers, key) => {
     const actual = Object.keys(headers || {}).find(k => k.toLowerCase() === key.toLowerCase());
@@ -49,7 +62,8 @@
   };
   const rewritePlain = (change) => {
     const json = JSON.parse(original);
-    if (!change(json)) return $done({});
+    if (!change(json)) { diag('passthrough: unchanged-json'); return $done({}); }
+    diag('modified: plain-json');
     return $done({body: JSON.stringify(json)});
   };
 
@@ -66,7 +80,10 @@
     const recharge = /\/i\/v1\/cust\/(?:aiMainQry|iopBatchQry)\//i.test(url);
     const h5 = /\/(?:DH\/(?:message_query\/message\/query\/list|myCardVoucher\/getBannerList)|DA\/commonBoard\/getCommonBoard)(?:\?|$)/i.test(url);
     const xPen = String(getHeader($response.headers, 'x-pen'));
-    if ((!recharge && h5 && xPen !== '1') || (!recharge && !h5 && xPen !== '14')) return $done({});
+    if ((!recharge && h5 && xPen !== '1') || (!recharge && !h5 && xPen !== '14')) {
+      diag('passthrough: unexpected-x-pen=' + (/^(1|14)$/.test(xPen) ? xPen : 'other-or-missing'));
+      return $done({});
+    }
 
     const encoder = new TextEncoder(), decoder = new TextDecoder('utf-8', {fatal: true});
     const enc = t => encoder.encode(t), dec = bytes => decoder.decode(bytes);
@@ -291,24 +308,27 @@
 
     if(recharge){
       const envelope=JSON.parse(original), outParam=envelope&&envelope.data&&envelope.data.outParam;
-      if(typeof outParam!=='string'||!outParam)return $done({});
+      if(typeof outParam!=='string'||!outParam){diag('passthrough: missing-recharge-outParam');return $done({});}
       const encryptedText=dec(b64dec(outParam)).replace(/\s/g,'');
       const p=await decryptJson(encryptedText,RECHARGE_KEY,RECHARGE_KEY);
       let changed=false;
       if(/\/i\/v1\/cust\/aiMainQry\//i.test(url)){
         if(p&&str(p.showFlag)!=='0'){p.showFlag='0';changed=true;}
       }else if(Array.isArray(p&&p.specialOfferZone)&&p.specialOfferZone.length){p.specialOfferZone=[];changed=true;}
-      if(!changed)return $done({});
+      if(!changed){diag('passthrough: recharge-unchanged');return $done({});}
       envelope.data.outParam=b64enc(enc(await encryptJson(p,RECHARGE_KEY,RECHARGE_KEY)));
+      diag('modified: recharge');
       return $done({body:JSON.stringify(envelope)});
     }
     if(h5){
       const envelope=JSON.parse(original);
-      if(!envelope||typeof envelope.body!=='string')return $done({});
+      if(!envelope||typeof envelope.body!=='string'){diag('passthrough: h5-body-not-string');return $done({});}
       const p=await decryptJson(envelope.body,H5_KEY,H5_IV);
-      if(!filterH5(p))return $done({});
+      if(!filterH5(p)){diag('passthrough: h5-unchanged');return $done({});}
       envelope.body=await encryptJson(p,H5_KEY,H5_IV);
-      return $done(signedResult(JSON.stringify(envelope)));
+      const result=signedResult(JSON.stringify(envelope));
+      diag('modified: h5');
+      return $done(result);
     }
     const payload=await decryptJson(original,AES_KEY,AES_IV);
     let changed=false;
@@ -319,11 +339,16 @@
     else if(/\/DN\/searchWord\/getSearchWordInfo(?:\?|$)/i.test(url)){
       const b=areaBody(payload);if(Array.isArray(b&&b.searchWordList)&&b.searchWordList.length){b.searchWordList=[];changed=true;}
     }else if(/\/DA\/baseServiceFunction\/getAdverList(?:\?|$)/i.test(url))changed=filterServicePages(payload);
-    if(!changed)return $done({});
-    return $done(signedResult(await encryptJson(payload,AES_KEY,AES_IV)));
+    if(!changed){diag('passthrough: decrypted-but-no-change');return $done({});}
+    const result=signedResult(await encryptJson(payload,AES_KEY,AES_IV));
+    diag('modified: main-aes');
+    return $done(result);
   }catch(e){
     // Fail open: never send a broken ciphertext or partial JSON back to the app.
-    console.log('[China Mobile Surge] skipped:', String(e&&e.message||e));
+    const kind = String(e && e.name || 'Error').replace(/[^A-Za-z0-9]/g, '').slice(0,40);
+    const msg = String(e && e.message || '').replace(/[\r\n]/g, ' ').slice(0,120);
+    diag('passthrough: exception=' + kind + ' msg=' + msg);
+    console.log('[China Mobile Surge] skipped (' + path + '): ' + kind + ' ' + msg);
     $done({});
   }
 })();
