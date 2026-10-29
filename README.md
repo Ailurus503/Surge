@@ -5,8 +5,7 @@
 ## 目录
 
 - [Script/Vae+_Checkin](./Script/Vae%2B_Checkin)：Vae+ 授权捕获与自动签到脚本
-- [Script/ChinaMobile](./Script/ChinaMobile)：中国移动广告净化脚本
-- [Module/ChinaMobile](./Module/ChinaMobile)：中国移动去广告 Surge 模块及说明
+- [Module/ChinaMobile](./Module/ChinaMobile)：中国移动去广告 Surge 模块、配套 JavaScript 脚本及说明
 
 ## 中国移动模块安装
 
