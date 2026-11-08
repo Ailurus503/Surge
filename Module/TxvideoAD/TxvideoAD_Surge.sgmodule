@@ -11,11 +11,11 @@ DOMAIN,iacc.stgw.qq.com,REJECT
 DOMAIN,tacc.video.qq.com,REJECT
 
 [Script]
-TxVideo-Request = type=http-request,pattern=^https?://i\.video\.qq\.com/(?:\?.*)?$,requires-body=true,binary-body-mode=true,max-size=4194304,timeout=30,engine=webview,debug=true,script-path=https://raw.githubusercontent.com/Ailurus503/Surge/main/Module/TxvideoAD/TxvideoAD_Surge_Adapter.js
-TxVideo-Response = type=http-response,pattern=^https?://i\.video\.qq\.com/(?:\?.*)?$,requires-body=true,binary-body-mode=true,max-size=4194304,timeout=30,engine=webview,debug=true,script-path=https://raw.githubusercontent.com/Ailurus503/Surge/main/Module/TxvideoAD/TxvideoAD_Surge_Adapter.js
-TxVideo-JCE = type=http-response,pattern=^https?://iacc\.qq\.com/(?:\?.*)?$,requires-body=true,binary-body-mode=true,max-size=4194304,timeout=30,engine=webview,debug=true,script-path=https://raw.githubusercontent.com/Ailurus503/Surge/main/Module/TxvideoAD/TxvideoAD_Surge_Adapter.js
-TxVideo-Tab = type=http-response,pattern=^https?://config\.ab\.qq\.com/tab/GetTabRemoteConfig(?:\?.*)?$,requires-body=true,binary-body-mode=true,max-size=4194304,timeout=30,engine=webview,debug=true,script-path=https://raw.githubusercontent.com/Ailurus503/Surge/main/Module/TxvideoAD/TxvideoAD_Surge_Adapter.js
-TxVideo-SDK = type=http-response,pattern=^https://rdelivery\.qq\.com/v1/sdkconfig/get(?:\?.*)?$,requires-body=true,binary-body-mode=true,max-size=4194304,timeout=30,engine=webview,debug=true,script-path=https://raw.githubusercontent.com/Ailurus503/Surge/main/Module/TxvideoAD/TxvideoAD_Surge_Adapter.js
+TxVideo-Request = type=http-request,pattern=^https?://i\.video\.qq\.com/(?:\?.*)?$,requires-body=true,binary-body-mode=true,max-size=4194304,timeout=30,engine=webview,debug=true,script-path=https://raw.githubusercontent.com/Ailurus503/Surge/main/Module/TxvideoAD/TxvideoAD_Surge_v2.js
+TxVideo-Response = type=http-response,pattern=^https?://i\.video\.qq\.com/(?:\?.*)?$,requires-body=true,binary-body-mode=true,max-size=4194304,timeout=30,engine=webview,debug=true,script-path=https://raw.githubusercontent.com/Ailurus503/Surge/main/Module/TxvideoAD/TxvideoAD_Surge_v2.js
+TxVideo-JCE = type=http-response,pattern=^https?://iacc\.qq\.com/(?:\?.*)?$,requires-body=true,binary-body-mode=true,max-size=4194304,timeout=30,engine=webview,debug=true,script-path=https://raw.githubusercontent.com/Ailurus503/Surge/main/Module/TxvideoAD/TxvideoAD_Surge_v2.js
+TxVideo-Tab = type=http-response,pattern=^https?://config\.ab\.qq\.com/tab/GetTabRemoteConfig(?:\?.*)?$,requires-body=true,binary-body-mode=true,max-size=4194304,timeout=30,engine=webview,debug=true,script-path=https://raw.githubusercontent.com/Ailurus503/Surge/main/Module/TxvideoAD/TxvideoAD_Surge_v2.js
+TxVideo-SDK = type=http-response,pattern=^https://rdelivery\.qq\.com/v1/sdkconfig/get(?:\?.*)?$,requires-body=true,binary-body-mode=true,max-size=4194304,timeout=30,engine=webview,debug=true,script-path=https://raw.githubusercontent.com/Ailurus503/Surge/main/Module/TxvideoAD/TxvideoAD_Surge_v2.js
 
 [MITM]
 hostname = %APPEND% i.video.qq.com, iacc.qq.com, config.ab.qq.com, rdelivery.qq.com
