@@ -1,21 +1,21 @@
 #!name=腾讯视频净化（Surge）
-#!desc=基于 ZenMoFeiShi 原版脚本的 Surge 静态移植，处理腾讯视频开屏、播放广告、底部标签及个人页面广告。
+#!desc=基于 ZenMoFeiShi 原版规则，调用 RoaycL 维护的 Surge 兼容脚本。
 #!system=ios
 
-# Upstream snippet: https://raw.githubusercontent.com/ZenMoFeiShi/Qx/refs/heads/main/TxvideoAD.snippet
-# Upstream JS: https://raw.githubusercontent.com/ZenMoFeiShi/Qx/refs/heads/main/Txvideoad.js
-# Static Surge port: binary-body-mode + Uint8Array; no runtime eval/download.
+# Rule source: https://raw.githubusercontent.com/ZenMoFeiShi/Qx/refs/heads/main/TxvideoAD.snippet
+# Surge-compatible JS: https://raw.githubusercontent.com/RoaycL/Surge/main/JS/Txvideoad.surge.js
+# This repository only maintains the module; the JS is hosted externally.
 
 [Rule]
 DOMAIN,iacc.stgw.qq.com,REJECT
 DOMAIN,tacc.video.qq.com,REJECT
 
 [Script]
-TxVideo-Request = type=http-request,pattern=^https?://i\.video\.qq\.com/(?:\?.*)?$,requires-body=true,binary-body-mode=true,max-size=4194304,timeout=30,engine=webview,debug=true,script-path=https://raw.githubusercontent.com/Ailurus503/Surge/main/Module/TxvideoAD/TxvideoAD_Surge_v2.js
-TxVideo-Response = type=http-response,pattern=^https?://i\.video\.qq\.com/(?:\?.*)?$,requires-body=true,binary-body-mode=true,max-size=4194304,timeout=30,engine=webview,debug=true,script-path=https://raw.githubusercontent.com/Ailurus503/Surge/main/Module/TxvideoAD/TxvideoAD_Surge_v2.js
-TxVideo-JCE = type=http-response,pattern=^https?://iacc\.qq\.com/(?:\?.*)?$,requires-body=true,binary-body-mode=true,max-size=4194304,timeout=30,engine=webview,debug=true,script-path=https://raw.githubusercontent.com/Ailurus503/Surge/main/Module/TxvideoAD/TxvideoAD_Surge_v2.js
-TxVideo-Tab = type=http-response,pattern=^https?://config\.ab\.qq\.com/tab/GetTabRemoteConfig(?:\?.*)?$,requires-body=true,binary-body-mode=true,max-size=4194304,timeout=30,engine=webview,debug=true,script-path=https://raw.githubusercontent.com/Ailurus503/Surge/main/Module/TxvideoAD/TxvideoAD_Surge_v2.js
-TxVideo-SDK = type=http-response,pattern=^https://rdelivery\.qq\.com/v1/sdkconfig/get(?:\?.*)?$,requires-body=true,binary-body-mode=true,max-size=4194304,timeout=30,engine=webview,debug=true,script-path=https://raw.githubusercontent.com/Ailurus503/Surge/main/Module/TxvideoAD/TxvideoAD_Surge_v2.js
+TxVideo-Request = type=http-request,pattern=^https?://i\\.video\\.qq\\.com/(?:\\?.*)?$,requires-body=true,binary-body-mode=true,max-size=1048576,timeout=30,engine=webview,debug=true,script-path=https://raw.githubusercontent.com/RoaycL/Surge/main/JS/Txvideoad.surge.js
+TxVideo-Response = type=http-response,pattern=^https?://i\\.video\\.qq\\.com/(?:\\?.*)?$,requires-body=true,binary-body-mode=true,max-size=1048576,timeout=30,engine=webview,debug=true,script-path=https://raw.githubusercontent.com/RoaycL/Surge/main/JS/Txvideoad.surge.js
+TxVideo-JCE = type=http-response,pattern=^https?://iacc\\.qq\\.com/(?:\\?.*)?$,requires-body=true,binary-body-mode=true,max-size=1048576,timeout=30,engine=webview,debug=true,script-path=https://raw.githubusercontent.com/RoaycL/Surge/main/JS/Txvideoad.surge.js
+TxVideo-Tab = type=http-response,pattern=^https?://config\\.ab\\.qq\\.com/tab/GetTabRemoteConfig(?:\\?.*)?$,requires-body=true,binary-body-mode=true,max-size=1048576,timeout=30,engine=webview,debug=true,script-path=https://raw.githubusercontent.com/RoaycL/Surge/main/JS/Txvideoad.surge.js
+TxVideo-SDK = type=http-response,pattern=^https://rdelivery\\.qq\\.com/v1/sdkconfig/get(?:\\?.*)?$,requires-body=true,binary-body-mode=false,max-size=1048576,timeout=30,engine=webview,debug=true,script-path=https://raw.githubusercontent.com/RoaycL/Surge/main/JS/Txvideoad.surge.js
 
 [MITM]
 hostname = %APPEND% i.video.qq.com, iacc.qq.com, config.ab.qq.com, rdelivery.qq.com
