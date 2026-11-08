@@ -1,0 +1,24 @@
+#!name=航旅纵横去广告（Surge）
+#!desc=精简航旅纵横首页与我的页面，屏蔽统计及部分推广接口。
+#!author=Alkaid
+#!icon=https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/da/75/f6/da75f662-e6f4-20db-777b-a047ca7dd497/AppIcon-0-0-1x_U007emarketing-0-7-0-85-220.png/512x512bb.jpg
+
+# Rule source: https://raw.githubusercontent.com/xingjiu29/Umetrip/refs/heads/main/umetrip.plugin
+# JS source: https://raw.githubusercontent.com/xingjiu29/Umetrip/refs/heads/main/umetrip.js
+# This repository only maintains the Surge module; JS is hosted upstream.
+
+[Rule]
+DOMAIN,sensors.umetrip.com.cn,REJECT
+DOMAIN,analytics.umetrip.com,REJECT
+
+[URL Rewrite]
+^https?:\/\/(discardrp|startup)\.umetrip\.com\/gateway\/api\/umetrip\/native - reject
+
+[Map Local]
+^https?:\/\/oss\.umetrip\.com\/fs\/advert\/polite data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+
+[Script]
+Umetrip-Response = type=http-response,pattern=(?i)^https?:\/\/(bkclient|umerp|home|umehome|sns|appmsg)\.umetrip\.com(\.cn)?\/gateway\/api\/umetrip\/native(?:\?.*)?$,requires-body=true,binary-body-mode=true,timeout=30,engine=webview,script-path=https://raw.githubusercontent.com/xingjiu29/Umetrip/refs/heads/main/umetrip.js
+
+[MITM]
+hostname = %APPEND% umerp.umetrip.com, umerp.umetrip.com.cn, home.umetrip.com, bkclient.umetrip.com.cn, discardrp.umetrip.com, startup.umetrip.com, oss.umetrip.com, umehome.umetrip.com, sns.umetrip.com, appmsg.umetrip.com
