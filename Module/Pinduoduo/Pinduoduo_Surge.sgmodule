@@ -1,0 +1,35 @@
+#!name=拼多多净化底栏与弹窗（Surge）
+#!desc=精简拼多多首页底栏，清理运营弹窗及首页 Banner。
+#!author=Alkaid
+
+# Rule source: https://raw.githubusercontent.com/ZenmoFeiShi/Qx/refs/heads/main/Pinduoduo.snippet
+# JS source: https://raw.githubusercontent.com/ZenmoFeiShi/Qx/refs/heads/main/Pinduoduo.js
+# This repository only maintains the Surge module; JS is hosted upstream.
+
+[Rule]
+DOMAIN,titan.pinduoduo.com,REJECT
+DOMAIN,titan-mt.pinduoduo.com,REJECT
+IP-CIDR,81.69.105.47/32,no-resolve,REJECT
+IP-CIDR,81.69.104.17/32,no-resolve,REJECT
+IP-CIDR,81.69.104.33/32,no-resolve,REJECT
+IP-CIDR,81.69.204.21/32,no-resolve,REJECT
+IP-CIDR,81.69.105.56/32,no-resolve,REJECT
+IP-CIDR,81.69.116.33/32,no-resolve,REJECT
+IP-CIDR,49.235.102.145/32,no-resolve,REJECT
+IP-CIDR,49.235.102.190/32,no-resolve,REJECT
+IP-CIDR,49.235.102.235/32,no-resolve,REJECT
+IP-CIDR,111.231.130.223/32,no-resolve,REJECT
+IP-CIDR,212.129.232.162/32,no-resolve,REJECT
+IP-CIDR,111.231.95.17/32,no-resolve,REJECT
+IP-CIDR,183.194.214.14/32,no-resolve,REJECT
+IP-CIDR,183.194.214.20/32,no-resolve,REJECT
+IP-CIDR,183.194.214.21/32,no-resolve,REJECT
+IP-CIDR,117.185.244.145/32,no-resolve,REJECT
+
+[Script]
+Pinduoduo-Homepage = type=http-response,pattern=^https://api\.pinduoduo\.com/api/alexa/homepage/hub(?:/refresh)?\?,requires-body=true,timeout=30,engine=webview,script-path=https://raw.githubusercontent.com/ZenmoFeiShi/Qx/refs/heads/main/Pinduoduo.js
+Pinduoduo-Global = type=http-response,pattern=^https://api\.pinduoduo\.com/api/(?:aquarius|flow)/hungary/(?:window/)?global/,requires-body=true,timeout=30,engine=webview,script-path=https://raw.githubusercontent.com/ZenmoFeiShi/Qx/refs/heads/main/Pinduoduo.js
+Pinduoduo-Banner = type=http-response,pattern=^https://api\.pinduoduo\.com/api/growth/nagato/app/index/gather,requires-body=true,timeout=30,engine=webview,script-path=https://raw.githubusercontent.com/ZenmoFeiShi/Qx/refs/heads/main/Pinduoduo.js
+
+[MITM]
+hostname = %APPEND% api.pinduoduo.com
