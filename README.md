@@ -5,6 +5,7 @@
 ## 目录
 
 - [Script/Vae+_Checkin](./Script/Vae%2B_Checkin)：Vae+ 授权捕获与自动签到脚本
+- [Module/TxvideoAD](./Module/TxvideoAD)：腾讯视频净化 Surge 模块及兼容脚本
 
 ## Vae+ 脚本地址
 
@@ -16,4 +17,4 @@
 ## 仓库组织约定
 
 - `Script/`：独立脚本
-- `Module/`：Surge 模块及其配套脚本，按项目独立存放（目前暂无模块）
+- `Module/`：Surge 模块及其配套脚本，按项目独立存放（按项目独立存放）
