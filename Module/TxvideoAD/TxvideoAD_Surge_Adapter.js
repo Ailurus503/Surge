@@ -760,6 +760,9 @@
     const url = $request.url || "", host = (url.split("/")[2] || "").split(":")[0];
     const isResp = typeof $response !== "undefined" && $response !== null;
     try {
+      const rawBody = isResp ? $response.body : $request.body;
+      const bodyLength = rawBody && typeof rawBody.length === "number" ? rawBody.length : 0;
+      console.log("txvideo-ad-clean: " + (isResp ? "response " : "request ") + host + " bytes=" + bodyLength);
       if (!isResp) {
         const b = host === "i.video.qq.com" ? toU8($request.body) : null;
         const r = b && b.length ? onTrpcRequest(b) : null;
